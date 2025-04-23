@@ -1,0 +1,37 @@
+﻿@model Todo.Web.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="row">
+    <div class="col-md-4 p-2 mx-auto shadow" style="background-color:lightgray">
+        <h4>Login</h4>
+        <hr />
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col m-sm-4">
+                <div class="form-group row">
+                    <input asp-for="Name" placeholder="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col m-sm-4">
+                <div class="form-group row">
+                    <input asp-for="Password" placeholder="Password" class="form-control" type="password" required />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group float-md-end" style="margin:0 10px 0 0">
+                    <input type="submit" value="Login" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
