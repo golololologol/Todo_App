@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Todo.Web.Clients.Interfaces;
 using Todo.Web.Clients.Models;
@@ -12,10 +13,12 @@ namespace Todo.Web.Controllers
     public class LoginController : Controller
     {
         private readonly IUserClient _userClient;
+        private readonly ILogger<LoginController> _logger;
 
-        public LoginController(IUserClient userClient)
+        public LoginController(IUserClient userClient, ILogger<LoginController> logger)
         {
             _userClient = userClient;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -86,16 +89,18 @@ namespace Todo.Web.Controllers
                     Password = model.Password!
                 });
 
+                if (userId is null || userId <= 0)
+                {
+                    ModelState.AddModelError(string.Empty, "Registration failed: invalid server response.");
+                    return View(model);
+                }
+
                 await SignInAsync(userId, model.Name!, false);
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"An error occurred during registration: {ex.Message}");
-            
-                ModelState.TryAddModelError(
-                    string.Empty,
-                    "An error occurred during registration.");
-            
+                _logger.LogError(ex, "Registration failed for user {Name}", model.Name);
+                ModelState.AddModelError(string.Empty, $"Registration error: {ex.Message}");
                 return View(model);
             }
 

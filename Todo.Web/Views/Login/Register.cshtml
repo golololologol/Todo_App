@@ -9,7 +9,7 @@
     <div class="col-md-4 p-2 mx-auto shadow" style="background-color:lightgray">
         <h4>Register</h4>
         <hr />
-        <form asp-action="Register">
+        <form asp-action="Register" method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="col m-sm-4">

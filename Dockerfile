@@ -29,9 +29,11 @@ COPY --from=build /app/web ./web
 
 # Create startup script to run both services
 RUN echo '#!/bin/sh' > run.sh && \
+    echo 'export ASPNETCORE_ENVIRONMENT=Development' >> run.sh && \
     echo 'export WEB_API_URL=http://localhost:5000/' >> run.sh && \
-    echo 'dotnet ./api/Todo.Web.Api.dll --urls http://127.0.0.1:5000 &' >> run.sh && \
+    echo 'dotnet ./api/Todo.Web.Api.dll --urls http://0.0.0.0:5000 &' >> run.sh && \
     echo 'cd web' >> run.sh && \
+    echo 'export ASPNETCORE_ENVIRONMENT=Development' >> run.sh && \
     echo 'dotnet Todo.Web.dll --urls http://0.0.0.0:$PORT' >> run.sh && \
     chmod +x run.sh
 
