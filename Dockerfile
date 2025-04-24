@@ -1,23 +1,40 @@
+# --- Multi-stage Dockerfile to build API and MVC Web in one container ---
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-COPY ["Todo.Web.Api/Todo.Web.Api.csproj", "Todo.Web.Api/"]
+# Copy project files for dependency restore
 COPY ["Todo.Application/Todo.Application.csproj", "Todo.Application/"]
 COPY ["Todo.Domain/Todo.Domain.csproj", "Todo.Domain/"]
 COPY ["Todo.Infrastructure/Todo.Infrastructure.csproj", "Todo.Infrastructure/"]
+COPY ["Todo.Web.Api/Todo.Web.Api.csproj", "Todo.Web.Api/"]
 COPY ["Todo.Web/Todo.Web.csproj", "Todo.Web/"]
+
 RUN dotnet restore "Todo.Web.Api/Todo.Web.Api.csproj"
 
+# Copy entire source
 COPY . .
-RUN dotnet publish "Todo.Web.Api/Todo.Web.Api.csproj" \
-    -c Release \
-    -o /app/publish
 
+# Publish API
+RUN dotnet publish "Todo.Web.Api/Todo.Web.Api.csproj" -c Release -o /app/api
+# Publish MVC Web
+RUN dotnet publish "Todo.Web/Todo.Web.csproj" -c Release -o /app/web
+
+# --- Final stage ---
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/publish ./
 
-ENV ASPNETCORE_URLS=http://+:80
-EXPOSE 80
+# Copy published outputs
+COPY --from=build /app/api ./api
+COPY --from=build /app/web ./web
 
-ENTRYPOINT ["dotnet", "Todo.Web.Api.dll"]
+# Create startup script to run both services
+RUN echo '#!/bin/sh' > run.sh && \
+    echo 'export WEB_API_URL=http://localhost:5000/' >> run.sh && \
+    echo 'dotnet ./api/Todo.Web.Api.dll --urls http://127.0.0.1:5000 &' >> run.sh && \
+    echo 'dotnet ./web/Todo.Web.dll --urls http://0.0.0.0:$PORT' >> run.sh && \
+    chmod +x run.sh
+
+# Expose ports for API (5000) and allow UI to bind via $PORT
+EXPOSE 5000
+
+ENTRYPOINT ["./run.sh"]

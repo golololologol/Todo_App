@@ -12,8 +12,10 @@ namespace Todo.Infrastructure
         {
             services.AddDbContext<DatabaseContext>(options =>
             {
-                options.UseSqlite(Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? "Data Source=db", 
-                    options => options.MigrationsAssembly(
+                var conn = Environment.GetEnvironmentVariable("CONNECTION_STRING")
+                           ?? "Host=localhost;Database=todo.db";
+                options.UseNpgsql(conn,
+                    opts => opts.MigrationsAssembly(
                         typeof(DatabaseContext).Assembly.GetName().Name));
             });
 
