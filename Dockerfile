@@ -31,7 +31,8 @@ COPY --from=build /app/web ./web
 RUN echo '#!/bin/sh' > run.sh && \
     echo 'export WEB_API_URL=http://localhost:5000/' >> run.sh && \
     echo 'dotnet ./api/Todo.Web.Api.dll --urls http://127.0.0.1:5000 &' >> run.sh && \
-    echo 'dotnet ./web/Todo.Web.dll --urls http://0.0.0.0:$PORT' >> run.sh && \
+    echo 'cd web' >> run.sh && \
+    echo 'dotnet Todo.Web.dll --urls http://0.0.0.0:$PORT' >> run.sh && \
     chmod +x run.sh
 
 # Expose ports for API (5000) and allow UI to bind via $PORT

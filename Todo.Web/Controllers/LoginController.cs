@@ -60,11 +60,12 @@ namespace Todo.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(ModelState);
+                return View(model);
             }
 
             if (model.Password != model.RepeatPassword)
@@ -89,7 +90,6 @@ namespace Todo.Web.Controllers
             }
             catch(Exception ex)
             {
-                // Log the exception details (replace with your logging mechanism)
                 Console.WriteLine($"An error occurred during registration: {ex.Message}");
             
                 ModelState.TryAddModelError(
