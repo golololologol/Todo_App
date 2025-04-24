@@ -31,33 +31,6 @@ docker-compose up --build
 
 ## API Endpoints
 
-### Todo Lists
-| Method | Route                  | Description               |
-| ------ | ---------------------- | ------------------------- |
-| GET    | /api/todolists         | List all todo lists       |
-| GET    | /api/todolists/{id}    | Get a single todo list    |
-| POST   | /api/todolists         | Create a new todo list    |
-| PUT    | /api/todolists/{id}    | Update an existing list   |
-| DELETE | /api/todolists/{id}    | Delete a todo list        |
-
-### Todo Tasks
-| Method | Route                  | Description                   |
-| ------ | ---------------------- | ----------------------------- |
-| GET    | /api/todotasks         | List all todo tasks           |
-| GET    | /api/todotasks/{id}    | Get a single todo task        |
-| POST   | /api/todotasks         | Create a new todo task        |
-| PUT    | /api/todotasks/{id}    | Update an existing todo task  |
-| DELETE | /api/todotasks/{id}    | Delete a todo task            |
-
-### Users
-| Method | Route               | Description               |
-| ------ | ------------------- | ------------------------- |
-| GET    | /api/users          | List all users            |
-| GET    | /api/users/{id}     | Get a single user         |
-| POST   | /api/users          | Create a new user         |
-| PUT    | /api/users/{id}     | Update an existing user   |
-| DELETE | /api/users/{id}     | Delete a user             |
-
 | Method | Route               | Description             |
 | ------ | ------------------- | ----------------------- |
 | GET    | /api/todos          | List all todos          |
@@ -70,4 +43,4 @@ docker-compose up --build
 ## Frontend
 
 - Reads/writes via `WEB_API_URL` env var (default: `http://web-api-todo/`)  
-- Implements listing, creation, editing, and deletion of tasks.
+- Implements listing, creation, editing, and deletion of tasks.  

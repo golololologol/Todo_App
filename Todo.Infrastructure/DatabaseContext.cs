@@ -30,10 +30,9 @@ namespace Todo.Infrastructure
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var conn = Environment.GetEnvironmentVariable("CONNECTION_STRING")
-                           ?? "Host=localhost;Database=todo.db";
-                optionsBuilder.UseNpgsql(conn,
-                    opts => opts.MigrationsAssembly(
+                optionsBuilder.UseSqlite(
+                    "Data Source = main_db",
+                    options => options.MigrationsAssembly(
                         typeof(DatabaseContext).Assembly.GetName().Name));
             }
 
